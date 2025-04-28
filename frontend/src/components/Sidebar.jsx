@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 const Sidebar = () => {
   const { channelDetails } = useSelector((state) => state?.channel);
   return (
-    <div className="w-44 bg-white p-4 flex flex-col space-y-6 shadow-md h-screen">
+    <div className="w-44 max-md:absolute shadow-lg rounded-xl shadow-black max-md:z-50 bg-white p-4 flex flex-col space-y-6 h-screen">
       {/* Home */}
       <Link
         to={"/"}

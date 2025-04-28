@@ -27,7 +27,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
 
   return (
     <>
-      <div className="flex justify-between mt-2 mx-2">
+      <div className="flex justify-between max-lg:flex-col gap-2 max-lg:items-center mt-2 mx-2">
         <div className="flex space-x-4 items-center">
           {/* hamburger icon */}
           <div

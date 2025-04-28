@@ -27,22 +27,17 @@ const VideoPlayerPage = () => {
   const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
-    const fetchVideo = async () => {
+    const fetchEverything = async () => {
       await getOneVideo(id);
-    };
-
-    const fetchComments = async () => {
-      const res = await getAllComments(vidId);
+      await saveHistory(id);
+      const res = await getAllComments(id);
       dispatch(setComments(res));
+      dispatch(addToHistory(id));
+      dispatch(setVideoId(id));
+      localStorage.setItem("vidId", id);
     };
 
-    const saveWatchHistory = async () => {
-      await saveHistory(vidId);
-      dispatch(addToHistory(vidId));
-    };
-    fetchVideo();
-    fetchComments();
-    saveWatchHistory();
+    fetchEverything();
   }, [vidId, id]);
 
   const handleAddComment = async () => {
@@ -69,19 +64,18 @@ const VideoPlayerPage = () => {
 
   return (
     <>
-      <div className="flex mt-4 mx-8 gap-8 w-full">
+      <div className="flex flex-col lg:flex-row mt-4 mx-4 gap-8">
         {/* Left Main Player Section */}
         <div className="flex-1">
           <div className="rounded-xl overflow-hidden">
-            <Youtube videoId={id} opts={{ height: "610", width: "100%" }} />
+            <Youtube videoId={id} opts={{ height: "250", width: "100%" }} />
           </div>
 
           {/* Video Title */}
           <h1 className="text-xl font-bold mt-4">{videoDetails?.title}</h1>
 
           {/* Channel Info and Subscribe */}
-          <div className="flex justify-between items-center mt-4">
-            {/* Channel Info */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 gap-4">
             <div className="flex items-center gap-4">
               <img
                 src={`${videoDetails?.uploader?.avatar}`}
@@ -93,7 +87,7 @@ const VideoPlayerPage = () => {
                   {videoDetails?.channel?.channelName}
                 </h2>
                 <p className="text-sm text-gray-600">
-                  {videoDetails?.channel?.subscribers}
+                  {videoDetails?.channel?.subscribers} Subscribers
                 </p>
               </div>
             </div>
@@ -104,27 +98,26 @@ const VideoPlayerPage = () => {
             </button>
           </div>
 
-          {/* Views and Likes Section */}
-          <div className="flex gap-6 mt-4 text-gray-600">
-            <p className="flex gap-1 justify-center items-center">
+          {/* Views and Likes */}
+          <div className="flex flex-wrap gap-4 mt-4 text-gray-600 text-sm">
+            <p className="flex gap-1 items-center">
               <FaRegEye /> {videoDetails?.views}
             </p>
-            <p className="flex gap-1 justify-center items-center">
+            <p className="flex gap-1 items-center">
               <FaThumbsUp /> {videoDetails?.likes}
             </p>
-            <p className="flex gap-1 justify-center items-center">
+            <p className="flex gap-1 items-center">
               <FaThumbsDown /> {videoDetails?.dislikes}
             </p>
           </div>
 
-          {/* Video Description */}
+          {/* Description */}
           <div className="mt-4 p-4 text-lg bg-gray-100 rounded-lg">
             Description: {videoDetails?.description}
           </div>
 
-          {/* Comments */}
-          <div className="flex flex-col gap-2 mt-2">
-            {/* Add a comment */}
+          {/* Comments Section */}
+          <div className="flex flex-col gap-2 mt-6">
             <div className="flex gap-4">
               <img
                 src={`${userDetails?.avatar}`}
@@ -132,23 +125,22 @@ const VideoPlayerPage = () => {
               />
               <input
                 type="text"
-                placeholder="Add a comments..."
+                placeholder="Add a comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="border-b outline-none w-full pl-4"
+                className="border-b w-full outline-none pl-4"
               />
               <button
                 onClick={handleAddComment}
-                className="text-blue-500 cursor-pointer font-semibold hover:underline"
+                className="text-blue-500 font-semibold hover:underline"
               >
                 Comment
               </button>
             </div>
 
-            {/* Posted Comments */}
             <div className="mt-4 flex flex-col gap-4">
               {comments?.length > 0 ? (
-                comments?.map((comment) => (
+                comments.map((comment) => (
                   <Comment key={comment._id} comment={comment} />
                 ))
               ) : (
@@ -164,7 +156,7 @@ const VideoPlayerPage = () => {
             Recommended Videos
           </h2>
           <div className="flex flex-col gap-2">
-            {allVideos[0]?.slice(1)?.map((v) => (
+            {allVideos[0]?.slice(1).map((v) => (
               <div
                 key={v.videoId}
                 className="flex gap-2 hover:bg-slate-200 p-2 rounded-md cursor-pointer"
@@ -172,6 +164,7 @@ const VideoPlayerPage = () => {
                   dispatch(setVideoId(v._id));
                   localStorage.setItem("vidId", v._id);
                   navigate(`/video/${v.videoId}`);
+                  window.scrollTo(0, 0);
                 }}
               >
                 <img

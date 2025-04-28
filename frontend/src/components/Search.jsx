@@ -1,20 +1,18 @@
 import { IoSearchSharp } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
-import { setSearchInput } from "../redux/videoSlice";
+import { useDispatch } from "react-redux";
+import { setSearchInput } from "../redux/videoSlice"; // Apna slice se action
 
 const Search = () => {
   const dispatch = useDispatch();
-  const { searchInput } = useSelector((state) => state.video);
 
   return (
     <>
       <div className="flex items-center border rounded-full">
         <input
           type="text"
-          className=" w-2xl px-4 rounded-full rounded-r-none outline-none py-2"
-          placeholder="Search"
-          value={searchInput}
           onChange={(e) => dispatch(setSearchInput(e.target.value))}
+          className="w-64 sm:w-80 px-4 py-2 rounded-full rounded-r-none outline-none"
+          placeholder="Search"
         />
         <button className="bg-slate-200 rounded-full rounded-l-none hover:bg-slate-300 cursor-pointer text-2xl py-2 px-4">
           <IoSearchSharp />

@@ -19,7 +19,7 @@ const ChannelPage = () => {
   return (
     <>
       {userInfo ? (
-        <div className="flex flex-col mt-2 mx-8">
+        <div className="flex flex-col mt-2 mx-8 max-md:mx-6 max-sm:mx-0">
           {userDetails?.channels?.length > 0 ? (
             <>
               {/* Banner Image */}
@@ -31,9 +31,9 @@ const ChannelPage = () => {
               ></div>
 
               {/* Channel Info Section */}
-              <div className="flex mt-2 justify-between items-center p-4">
+              <div className="flex mt-2 justify-between items-center p-4j max-md:p-2 max-md:flex-col">
                 {/* Channel profile image and info */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 max-md:flex-col">
                   {/* Channel Picture, Name and Subscribers */}
                   <img
                     src={`${channelDetails?.owner?.avatar}`}
@@ -67,7 +67,9 @@ const ChannelPage = () => {
                         className="border border-green-400 rounded-full hover:bg-green-600 hover:text-white hover:scale-x-110 hover:-translate-y-1.5 duration-150 transition-all px-4 py-2"
                       >
                         Create
-                        {userDetails?.channels?.length > 0 ? "Another" : "Your"}
+                        {userDetails?.channels?.length > 0
+                          ? "Another"
+                          : "Your"}{" "}
                         channel
                       </Link>
                     </div>
@@ -124,7 +126,7 @@ const ChannelPage = () => {
 
               {/* Videos Section */}
               {isActive === "Videos" && (
-                <div className="p-4 grid grid-cols-4 gap-8 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
+                <div className="p-4 max-md:p-2 grid grid-cols-4 gap-8 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
                   {channelDetails?.videos?.map((video) => (
                     <Link
                       to={`/video/${video.videoId}`}
@@ -140,7 +142,7 @@ const ChannelPage = () => {
                         />
                       </div>
 
-                      <div className="absolute top-2 left-1/4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-4">
+                      <div className="absolute top-2 left-1/4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-4 z-10">
                         <button
                           onClick={(e) => {
                             e.preventDefault();
@@ -243,19 +245,7 @@ const ChannelPage = () => {
           )}
         </div>
       ) : (
-        <>
-          <div className="flex gap-4 h-96 items-center flex-col justify-center">
-            <h1 className="text-center font-bold text-blue-500 text-2xl">
-              Please Login to View Your Channel...
-            </h1>
-            <Link
-              to={"/login"}
-              className="text-blue-400 font-serif border-2 border-blue-500 px-4  rounded-2xl hover:scale-x-110 duration-200 transition-all hover:underline text-4xl"
-            >
-              Login
-            </Link>
-          </div>
-        </>
+        <h1>Please login to access this page</h1>
       )}
     </>
   );

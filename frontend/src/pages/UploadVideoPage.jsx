@@ -41,7 +41,7 @@ const UploadVideoPage = () => {
   };
 
   return (
-    <div className="p-8 max-w-3xl mx-auto">
+    <div className="p-8 max-w-3xl mx-auto max-md:p-4 max-sm:p-2 shadow-[1px_1px_10px] rounded-xl shadow-black">
       <h2 className="text-2xl font-bold text-center mb-6 underline text-blue-500">
         Upload a Video
       </h2>
@@ -50,7 +50,7 @@ const UploadVideoPage = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md"
+        className="flex flex-col gap-4 bg-white p-6 rounded-lg"
       >
         <input
           type="text"

@@ -1,15 +1,20 @@
 import filterOptions from "../utils/DummyFilterOptions";
 
-const FilterButtons = () => {
+const FilterButtons = ({ setSelectedCategory, selectedCategory }) => {
   return (
-    <div className="flex gap-2 my-2 items-center max-w-screen px-2">
+    <div className="flex gap-3 flex-wrap">
       {filterOptions.map((option) => (
-        <div
+        <button
           key={option}
-          className="bg-slate-200 py-1 px-3 rounded-xl hover:bg-slate-300 hover:scale-105 transition-transform duration-150 cursor-pointer inline-block"
+          onClick={() => setSelectedCategory(option)}
+          className={`py-1 px-4 rounded-full text-sm ${
+            selectedCategory === option
+              ? "bg-black text-white"
+              : "bg-gray-200 hover:bg-gray-300"
+          }`}
         >
           {option}
-        </div>
+        </button>
       ))}
     </div>
   );

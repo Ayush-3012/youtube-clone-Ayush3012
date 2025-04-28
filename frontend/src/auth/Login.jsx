@@ -39,7 +39,7 @@ const Login = () => {
         <div className="flex justify-center items-center py-8 bg-gray-100">
           <form
             onSubmit={handleLogin}
-            className="bg-white p-8 rounded-xl shadow-md w-96 flex flex-col gap-2"
+            className="bg-white p-8 rounded-xl shadow-md w-96 max-lg:w-80 max-md:w-72 flex flex-col gap-2"
           >
             <h2 className="text-2xl font-bold text-center text-green-500 mb-4 underline">Login</h2>
 
