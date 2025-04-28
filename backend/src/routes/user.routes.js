@@ -4,6 +4,7 @@ import {
   registerUser,
   getUserDetails,
   logout,
+  addToHistory,
 } from "../controllers/user.controller.js";
 import verifyToken from "../middlewares/auth.middleware.js";
 
@@ -17,5 +18,6 @@ userRouter.route("/auth-status").get(verifyToken, (req, res) => {
 });
 
 userRouter.route("/logout").post(verifyToken, logout);
+userRouter.route("/history/:videoId").post(verifyToken, addToHistory);
 
 export default userRouter;

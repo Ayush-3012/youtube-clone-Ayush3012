@@ -8,11 +8,13 @@ import { useAuth } from "../hooks/useAuth";
 import { useEffect } from "react";
 import { IoLogOut } from "react-icons/io5";
 import { enqueueSnackbar } from "notistack";
+import { useChannel } from "../hooks/useChannel";
 
 const Header = ({ showSidebar, setShowSidebar }) => {
   const { getUserDetails, logout } = useAuth();
   const { userInfo, userDetails } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  useChannel();
 
   useEffect(() => {
     const findData = async () => {
@@ -69,7 +71,7 @@ const Header = ({ showSidebar, setShowSidebar }) => {
                 <FaRegUserCircle className="text-4xl" />
               )}
               <IoLogOut
-                className="text-4xl text-blue-400"
+                className="text-4xl text-red-400"
                 onClick={async () => {
                   const res = await logout();
                   enqueueSnackbar(res, { variant: "success" });

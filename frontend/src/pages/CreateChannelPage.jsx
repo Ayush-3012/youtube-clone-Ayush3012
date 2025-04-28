@@ -2,31 +2,48 @@ import { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useChannel } from "../hooks/useChannel";
 import { enqueueSnackbar } from "notistack";
+import { useLocation } from "react-router-dom";
 
 const CreateChannelPage = () => {
-  const [channelName, setChannelName] = useState("");
-  const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [channelBanner, setChannelBanner] = useState("");
+  const loc = useLocation();
+  const oldChannelData = loc?.state?.oldChannelData;
+  const editMode = !!oldChannelData;
+
+  const [channelName, setChannelName] = useState(
+    oldChannelData?.channelName || ""
+  );
+  const [description, setDescription] = useState(
+    oldChannelData?.description || ""
+  );
+  const [location, setLocation] = useState(oldChannelData?.location || "");
+  const [channelBanner, setChannelBanner] = useState(
+    oldChannelData?.channelBanner || ""
+  );
   const [error, setError] = useState("");
 
-  const { createChannel } = useChannel();
+  const { createChannel, updateChannelInfo } = useChannel();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!channelName || !description || !channelBanner || !location) {
       setError("All fields are required!");
-      enqueueSnackbar(error, { variant: "error" });
+      enqueueSnackbar("All fields are required!", { variant: "error" });
       return;
     }
 
     try {
       const channelData = { channelName, description, location, channelBanner };
-      const res = await createChannel(channelData);
-      enqueueSnackbar(res, { variant: "success" });
+
+      if (editMode) {
+        await updateChannelInfo(oldChannelData._id, channelData);
+        enqueueSnackbar("Channel Updated Successfully", { variant: "success" });
+      } else {
+        const res = await createChannel(channelData);
+        enqueueSnackbar(res, { variant: "success" });
+      }
     } catch (err) {
       console.log(err);
-      setError(err?.response?.data?.message);
+      setError(err?.response?.data?.message || "Something went wrong");
       enqueueSnackbar(error, { variant: "error" });
     }
   };
@@ -86,18 +103,7 @@ const CreateChannelPage = () => {
             type="submit"
             className="py-3 px-10 cursor-pointer bg-blue-600 hover:bg-blue-800 hover:scale-x-105 transition text-white font-bold rounded-lg shadow-md"
           >
-            Create
-          </button>
-          <button
-            type="button"
-            className="px-10 py-3 cursor-pointer bg-white hover:bg-gray-200 hover:scale-x-105 transition text-black font-bold rounded-lg shadow-md"
-            onClick={() => {
-              setChannelName("");
-              setDescription("");
-              setError("");
-            }}
-          >
-            Cancel
+            {editMode ? "Update" : "Create"}
           </button>
         </div>
       </form>

@@ -11,6 +11,7 @@ import Sidebar from "./components/Sidebar";
 import CreateChannelPage from "./pages/CreateChannelPage";
 import UploadVideoPage from "./pages/UploadVideoPage";
 import UpdateVideoPage from "./pages/UpdateVideoPage";
+import HistoryPage from "./pages/History";
 
 const App = () => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/video/:id" element={<VideoPlayer />} />
             <Route path="/upload" element={<UploadVideoPage />} />
             <Route path="/updateVideo/:id" element={<UpdateVideoPage />} />
+            <Route path="/history" element={<HistoryPage />} />
             <Route path="/create" element={<CreateChannelPage />} />
           </Routes>
         </div>

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch} from "react-redux";
 import { setChannelDetails } from "../redux/channelSlice";
 import { useEffect } from "react";
 
@@ -67,7 +67,7 @@ export const useChannel = () => {
       }
     );
 
-    return res.data;
+    return res.data.message;
   };
 
   return { createChannel, getChannelInfo, updateChannelInfo, deleteChannel };

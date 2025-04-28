@@ -8,11 +8,10 @@ import { enqueueSnackbar } from "notistack";
 import { useChannel } from "../hooks/useChannel";
 
 const ChannelPage = () => {
-  useChannel();
-
-  const { userDetails, userInfo } = useSelector((state) => state.auth);
   const { channelDetails } = useSelector((state) => state.channel);
+  const { userDetails, userInfo } = useSelector((state) => state.auth);
   const { deleteVideo } = useVideos();
+  const { deleteChannel } = useChannel();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState("Videos");
@@ -54,19 +53,49 @@ const ChannelPage = () => {
                   </div>
                 </div>
 
-                {/* Subscribe Button */}
-                <div className="mt-4 flex gap-4 sm:mt-0">
-                  <button className="bg-black hover:scale-x-110 duration-150 transition-all cursor-pointer text-white py-2 px-6 rounded-full hover:opacity-80">
-                    Subscribe
-                  </button>
-                  <div className="flex items-center justify-end">
-                    <Link
-                      to={"/create"}
-                      className="border border-blue-400 rounded-full hover:bg-blue-600 hover:text-white hover:scale-x-110 duration-150 transition-all px-4 py-2"
-                    >
-                      Create Your Channel
-                    </Link>
+                {/* Buttons */}
+                <div className="mt-4 flex flex-col items-center justify-center gap-4 sm:mt-0">
+                  <div className="flex gap-4">
+                    {userDetails?._id !== channelDetails?.owner?._id && (
+                      <button className="border border-black hover:scale-x-110 duration-150 transition-all cursor-pointer hover:bg-black hover:text-white hover:-translate-y-1.5 py-2 px-6 rounded-full">
+                        Subscribe
+                      </button>
+                    )}
+                    <div className="flex items-center justify-end">
+                      <Link
+                        to={"/create"}
+                        className="border border-green-400 rounded-full hover:bg-green-600 hover:text-white hover:scale-x-110 hover:-translate-y-1.5 duration-150 transition-all px-4 py-2"
+                      >
+                        Create
+                        {userDetails?.channels?.length > 0 ? "Another" : "Your"}
+                        channel
+                      </Link>
+                    </div>
                   </div>
+                  {/* Edit or Delete your channel */}
+                  {userDetails?._id === channelDetails?.owner?._id && (
+                    <div className="flex gap-4">
+                      <button
+                        className="border border-blue-400 hover:scale-x-110 hover:-translate-y-1.5 duration-150 transition-all cursor-pointer hover:bg-blue-600 hover:text-white py-2 px-6 rounded-full "
+                        onClick={() => {
+                          navigate("/create", {
+                            state: { oldChannelData: channelDetails },
+                          });
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="border border-red-500 hover:scale-x-110 duration-150 hover:-translate-y-1.5 transition-all cursor-pointer hover:bg-red-600 hover:text-white py-2 px-6 rounded-full"
+                        onClick={async () => {
+                          const msg = await deleteChannel(channelDetails?._id);
+                          enqueueSnackbar(msg, { variant: "success" });
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex gap-4 ml-12 mb-1">

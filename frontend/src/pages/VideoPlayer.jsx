@@ -10,19 +10,20 @@ import { FaRegEye, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { useComment } from "../hooks/useComment";
 import { addComment, setComments } from "../redux/commentSlice";
 import { setVideoId } from "../redux/videoSlice";
+import { useHistory } from "../hooks/useHistory";
+import { addToHistory } from "../redux/historySlice";
 
 const VideoPlayerPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { getOneVideo } = useVideos();
+  const { saveHistory } = useHistory();
   const { userDetails } = useSelector((state) => state.auth);
-  const { videoDetails, allVideos, vidId } = useSelector(
-    (state) => state.video
-  );
+  const { videoDetails, allVideos } = useSelector((state) => state.video);
   const comments = useSelector((state) => state.comment.comments);
   const { addAComment, getAllComments } = useComment();
-
+  const vidId = localStorage.getItem("vidId");
   const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
@@ -34,8 +35,14 @@ const VideoPlayerPage = () => {
       const res = await getAllComments(vidId);
       dispatch(setComments(res));
     };
+
+    const saveWatchHistory = async () => {
+      await saveHistory(vidId);
+      dispatch(addToHistory(vidId));
+    };
     fetchVideo();
     fetchComments();
+    saveWatchHistory();
   }, [vidId, id]);
 
   const handleAddComment = async () => {
@@ -163,6 +170,7 @@ const VideoPlayerPage = () => {
                 className="flex gap-2 hover:bg-slate-200 p-2 rounded-md cursor-pointer"
                 onClick={() => {
                   dispatch(setVideoId(v._id));
+                  localStorage.setItem("vidId", v._id);
                   navigate(`/video/${v.videoId}`);
                 }}
               >

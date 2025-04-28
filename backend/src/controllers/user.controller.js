@@ -72,3 +72,24 @@ export const logout = async (req, res) => {
     return res.status(500).json({ message: "Server Error" });
   }
 };
+
+export const addToHistory = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Add only if not already present
+    if (!user.history.includes(videoId)) {
+      user.history.push(videoId);
+      await user.save();
+    }
+
+    return res.status(200).json({ message: "Video added to history" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

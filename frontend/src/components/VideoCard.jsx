@@ -11,6 +11,7 @@ const VideoCard = ({ video }) => {
     <div
       onClick={() => {
         dispatch(setVideoId(video._id));
+        localStorage.setItem("vidId", video._id);
         navigate(`/video/${video.videoId}`);
       }}
       className="cursor-pointer max-w-screen flex w-96 flex-col"

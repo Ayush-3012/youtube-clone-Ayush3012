@@ -4,11 +4,13 @@ import {
   MdHistory,
 } from "react-icons/md";
 import { SiYoutubeshorts } from "react-icons/si";
-import { AiOutlineLike } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
+  const { channelDetails } = useSelector((state) => state?.channel);
   return (
     <div className="w-44 bg-white p-4 flex flex-col space-y-6 shadow-md h-screen">
       {/* Home */}
@@ -21,16 +23,28 @@ const Sidebar = () => {
       </Link>
 
       {/* Shorts */}
-      <Link className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg">
+      <div
+        className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
+        onClick={() =>
+          enqueueSnackbar("Shorts Page Upcoming", { variant: "info" })
+        }
+      >
         <SiYoutubeshorts className="text-2xl" />
         <span className="text-md font-semibold">Shorts</span>
-      </Link>
+      </div>
 
       {/* Subscriptions */}
-      <Link className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg">
+      <div
+        className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
+        onClick={() => {
+          enqueueSnackbar(`Total Subscribers: ${channelDetails?.subscribers}`, {
+            variant: "success",
+          });
+        }}
+      >
         <MdOutlineSubscriptions className="text-2xl" />
         <span className="text-md font-semibold">Subscriptions</span>
-      </Link>
+      </div>
 
       <hr className="border-gray-300" />
 
@@ -44,15 +58,12 @@ const Sidebar = () => {
       </Link>
 
       {/* History */}
-      <Link className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg">
+      <Link
+        to="/history"
+        className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
+      >
         <MdHistory className="text-2xl" />
         <span className="text-md font-semibold">History</span>
-      </Link>
-
-      {/* Liked Videos */}
-      <Link className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg">
-        <AiOutlineLike className="text-2xl" />
-        <span className="text-md font-semibold">Liked Videos</span>
       </Link>
     </div>
   );

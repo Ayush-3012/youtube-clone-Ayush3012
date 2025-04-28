@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useComment } from "../hooks/useComment";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteComment as deleteCommentAction } from "../redux/commentSlice";
+import {
+  deleteComment as deleteCommentAction,
+  editComment,
+} from "../redux/commentSlice";
 import { enqueueSnackbar } from "notistack";
 
 const Comment = ({ comment }) => {
@@ -36,6 +39,8 @@ const Comment = ({ comment }) => {
   const handleEdit = async () => {
     if (editedText.trim() === "") return;
     await updateComment(comment._id, editedText);
+
+    dispatch(editComment({ commentId: comment._id, newText: editedText }));
     enqueueSnackbar("Comment Updated", { variant: "success" });
     setIsEditing(false);
   };
