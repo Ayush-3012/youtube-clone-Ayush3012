@@ -1,50 +1,93 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useNavigate, useParams } from "react-router-dom";
+import Youtube from "react-youtube";
 import Comment from "../components/Comment";
-import { dummyVideos } from "../utils/DummyVideos";
 import { useEffect, useState } from "react";
+import { enqueueSnackbar } from "notistack";
+import { useDispatch, useSelector } from "react-redux";
+import { useVideos } from "../hooks/useVideos";
+import { FaRegEye, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
+import { useComment } from "../hooks/useComment";
+import { addComment, setComments } from "../redux/commentSlice";
+import { setVideoId } from "../redux/videoSlice";
 
 const VideoPlayerPage = () => {
   const { id } = useParams();
-  const [video, setVideo] = useState(null);
   const navigate = useNavigate();
-  const randomEnd = Math.floor(Math.random() * 10);
+  const dispatch = useDispatch();
+  const { getOneVideo } = useVideos();
+  const { userDetails } = useSelector((state) => state.auth);
+  const { videoDetails, allVideos, vidId } = useSelector(
+    (state) => state.video
+  );
+  const comments = useSelector((state) => state.comment.comments);
+  const { addAComment, getAllComments } = useComment();
+
+  const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
-    const foundVid = dummyVideos.find((vid) => vid.videoId === id);
-    setVideo(foundVid);
-  }, [id]);
+    const fetchVideo = async () => {
+      await getOneVideo(id);
+    };
+
+    const fetchComments = async () => {
+      const res = await getAllComments(vidId);
+      dispatch(setComments(res));
+    };
+    fetchVideo();
+    fetchComments();
+  }, [vidId, id]);
+
+  const handleAddComment = async () => {
+    if (newComment.trim() === "") return;
+
+    const res = await addAComment(vidId, newComment);
+
+    const formattedComment = {
+      _id: res.newComment._id,
+      text: res.newComment.text,
+      timestamp: res.newComment.timestamp,
+      createdAt: res.newComment.createdAt,
+      updatedAt: res.newComment.updatedAt,
+      user: {
+        _id: res.newComment.user,
+      },
+      video: res.newComment.video,
+    };
+
+    dispatch(addComment(formattedComment));
+    enqueueSnackbar(res.message, { variant: "success" });
+    setNewComment("");
+  };
 
   return (
     <>
       <div className="flex mt-4 mx-8 gap-8 w-full">
         {/* Left Main Player Section */}
         <div className="flex-1">
-          {/* Video iframe */}
-          <div className="w-full aspect-video rounded-xl overflow-hidden">
-            <iframe
-              src={video?.videoUrl}
-              title="YouTube Video Player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-            ></iframe>
+          <div className="rounded-xl overflow-hidden">
+            <Youtube videoId={id} opts={{ height: "610", width: "100%" }} />
           </div>
 
           {/* Video Title */}
-          <h1 className="text-xl font-bold mt-4">{video?.title}</h1>
+          <h1 className="text-xl font-bold mt-4">{videoDetails?.title}</h1>
 
           {/* Channel Info and Subscribe */}
           <div className="flex justify-between items-center mt-4">
             {/* Channel Info */}
             <div className="flex items-center gap-4">
               <img
-                src="https://yt3.ggpht.com/nVHFu4toQhlTic0QNJ1YBvpiQP74RHuwFNuQa6wog0b6TsukL9DVjiUeCAkp1fYyqkZnVpleem0=s68-c-k-c0x00ffffff-no-rj"
+                src={`${videoDetails?.uploader?.avatar}`}
                 alt="channel-logo"
                 className="rounded-full w-12 h-12"
               />
               <div>
-                <h2 className="font-semibold">HD Songs Bollywood</h2>
-                <p className="text-sm text-gray-600">1.2M subscribers</p>
+                <h2 className="font-semibold">
+                  {videoDetails?.channel?.channelName}
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {videoDetails?.channel?.subscribers}
+                </p>
               </div>
             </div>
 
@@ -56,33 +99,54 @@ const VideoPlayerPage = () => {
 
           {/* Views and Likes Section */}
           <div className="flex gap-6 mt-4 text-gray-600">
-            <p>{video?.views} views</p>
-            <p>100 Likes</p> {/* Dummy static for now */}
-            <p>5 Dislikes</p> {/* Dummy static for now */}
+            <p className="flex gap-1 justify-center items-center">
+              <FaRegEye /> {videoDetails?.views}
+            </p>
+            <p className="flex gap-1 justify-center items-center">
+              <FaThumbsUp /> {videoDetails?.likes}
+            </p>
+            <p className="flex gap-1 justify-center items-center">
+              <FaThumbsDown /> {videoDetails?.dislikes}
+            </p>
           </div>
 
           {/* Video Description */}
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-            {video?.description}
+          <div className="mt-4 p-4 text-lg bg-gray-100 rounded-lg">
+            Description: {videoDetails?.description}
           </div>
 
           {/* Comments */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 mt-2">
             {/* Add a comment */}
             <div className="flex gap-4">
-              <img src="/Youtube-logo.png" className="w-10 h-10 rounded-full" />
+              <img
+                src={`${userDetails?.avatar}`}
+                className="w-10 h-10 rounded-full"
+              />
               <input
                 type="text"
                 placeholder="Add a comments..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
                 className="border-b outline-none w-full pl-4"
               />
+              <button
+                onClick={handleAddComment}
+                className="text-blue-500 cursor-pointer font-semibold hover:underline"
+              >
+                Comment
+              </button>
             </div>
 
             {/* Posted Comments */}
-            <div>
-              {video?.comments?.map((comment) => (
-                <Comment key={comment.commentId} comment={comment} />
-              ))}
+            <div className="mt-4 flex flex-col gap-4">
+              {comments?.length > 0 ? (
+                comments?.map((comment) => (
+                  <Comment key={comment._id} comment={comment} />
+                ))
+              ) : (
+                <p className="text-gray-500">No comments yet.</p>
+              )}
             </div>
           </div>
         </div>
@@ -93,11 +157,14 @@ const VideoPlayerPage = () => {
             Recommended Videos
           </h2>
           <div className="flex flex-col gap-2">
-            {dummyVideos.slice(1, randomEnd).map((v) => (
+            {allVideos[0]?.slice(1)?.map((v) => (
               <div
                 key={v.videoId}
                 className="flex gap-2 hover:bg-slate-200 p-2 rounded-md cursor-pointer"
-                onClick={() => navigate(`/video/${v.videoId}`)}
+                onClick={() => {
+                  dispatch(setVideoId(v._id));
+                  navigate(`/video/${v.videoId}`);
+                }}
               >
                 <img
                   src={v.thumbnailUrl}

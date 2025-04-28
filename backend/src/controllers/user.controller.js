@@ -1,12 +1,12 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import generateTokens from "../utils/generateTokens.js";
+import generateToken from "../utils/generateToken.js";
 
 export const registerUser = async (req, res) => {
-  const { userName, email, password, avatar } = req.body;
+  const { username, email, password, avatar } = req.body;
 
   try {
-    const foundUser = User.findOne({ email });
+    const foundUser = await User.findOne({ email });
     if (foundUser)
       return res.status(400).json({ message: "Email already in use" });
 
@@ -14,15 +14,15 @@ export const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = await User.create({
-      userName,
+      username,
       email,
       password: hashedPassword,
       avatar,
     });
 
-    return res
-      .json(201)
-      .json({ _id: newUser._id, token: generateTokens(newUser._id) });
+    const token = generateToken(newUser._id.toString());
+
+    return res.status(201).json({ userId: newUser._id, token });
   } catch (error) {
     console.error("Error in registerUser:", error);
     return res.status(500).json({ message: "Server Error" });
@@ -32,24 +32,43 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const foundUser = User.findOne({ email });
+    const foundUser = await User.findOne({ email });
     if (!foundUser)
       return res
         .status(400)
         .json({ message: "Either username or password is invalid" });
 
-    const passwordMatched = await User.validatePassword(password);
+    const passwordMatched = await foundUser.validatePassword(password);
     if (!passwordMatched)
       return res
         .status(400)
         .json({ message: "Either username or password is invalid" });
 
-    res.json({
-      _id: foundUser._id,
-      token: generateTokens(foundUser._id),
-    });
+    const token = generateToken(foundUser._id.toString());
+    return res.status(200).json({ foundUser, token });
   } catch (error) {
     console.error("Error in loginUser:", error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const getUserDetails = async (req, res) => {
+  try {
+    const foundUser = await User.findById(req.params.userId);
+    if (!foundUser) return res.status(400).json({ message: "User not found" });
+
+    return res.status(200).json({ message: "Found User", foundUser });
+  } catch (error) {
+    console.error("Error in getUserDetails:", error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    return res.json({ message: "User Logged out successfully" });
+  } catch (error) {
+    console.error("Error in logout:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 };

@@ -1,8 +1,12 @@
+import { useSelector } from "react-redux";
 import FilterButtons from "../components/FilterButtons";
 import VideoCard from "../components/VideoCard";
-import { dummyVideos } from "../utils/DummyVideos";
+import { useVideos } from "../hooks/useVideos";
 
 const HomePage = () => {
+  useVideos();
+  const allVideos = useSelector((state) => state?.video?.allVideos);
+
   return (
     <div className="flex">
       {/* Main Content */}
@@ -14,8 +18,8 @@ const HomePage = () => {
 
         {/* Videos Section */}
         <div className="grid px-4 py-4 grid-cols-4 gap-8 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
-          {dummyVideos.map((video) => (
-            <VideoCard key={video.videoId} video={video} />
+          {allVideos[0]?.map((video) => (
+            <VideoCard key={video._id} video={video} />
           ))}
         </div>
       </div>

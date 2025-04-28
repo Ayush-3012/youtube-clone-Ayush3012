@@ -1,7 +1,10 @@
-import { Channel } from "../models/channel.model.js";
+import Channel from "../models/channel.model.js";
+import User from "../models/user.model.js";
 
 export const createChannel = async (req, res) => {
-  const { channelName, description, location, channelBanner } = req.body;
+  const { channelName, description, location, channelBanner } =
+    req.body.channelData;
+
   try {
     // creating new channel with required details
     const newChannel = await Channel.create({

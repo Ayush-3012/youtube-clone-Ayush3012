@@ -1,20 +1,21 @@
-import { Comment } from "../models/comment.model.js";
-import { Video } from "../models/video.model.js";
+import { Types } from "mongoose";
+import Comment from "../models/comment.model.js";
+import Video from "../models/video.model.js";
 
 export const addAComment = async (req, res) => {
   try {
-    const { text } = req.body;
-    const newComment = Comment.create({
+    const { comment } = req.body;
+
+    const newComment = await Comment.create({
       user: req.user.id,
-      video: req.params.id,
-      text,
+      video: req.params.videoId,
+      text: comment,
     });
 
-    await Video.findByIdAndUpdate(req.params.id, {
+    await Video.findByIdAndUpdate(req.params.videoId, {
       $push: { comments: newComment._id },
     });
-
-    return res.statu(201).json({ message: "Comment Added", newComment });
+    return res.status(201).json({ message: "Comment Added", newComment });
   } catch (error) {
     console.error("Error while adding comment:", error);
     return res.status(500).json({ message: "Server error" });
@@ -22,20 +23,20 @@ export const addAComment = async (req, res) => {
 };
 export const getAllComments = async (req, res) => {
   try {
-    const comments = await Comment.find({ video: req.params.id })
+    const comments = await Comment.find({ video: req.params.videoId })
       .populate("user", "username avatar")
       .sort({ createdAt: -1 }); // Newest comments first
 
-    return res.status(200).json(commentscomments);
+    return res.status(200).json(comments);
   } catch (error) {
-    console.error("Error whle getting all comments:", error);
+    console.error("Error while getting all comments:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };
 export const updateComment = async (req, res) => {
   try {
-    const { text } = req.body;
-    const foundComment = await Comment.findById(req.params.id);
+    const { updatedComment } = req.body;
+    const foundComment = await Comment.findById(req.params.commentId);
 
     if (!foundComment)
       return res.status(404).json({ message: "Comment not found" });
@@ -46,7 +47,7 @@ export const updateComment = async (req, res) => {
         .json({ message: "Unauthorized to update comment" });
     }
 
-    foundComment.text = text;
+    foundComment.text = updatedComment;
     await foundComment.save();
 
     return res.status(200).json(foundComment);
@@ -57,7 +58,7 @@ export const updateComment = async (req, res) => {
 };
 export const deleteComment = async (req, res) => {
   try {
-    const foundComment = await Comment.findById(req.params.id);
+    const foundComment = await Comment.findById(req.params.commentId);
 
     if (!foundComment)
       return res.status(404).json({ message: "Comment not found" });
@@ -66,7 +67,7 @@ export const deleteComment = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    await foundComment.remove();
+    await foundComment.deleteOne();
 
     // Remove comment from video.comments array
     await Video.findByIdAndUpdate(foundComment.video, {

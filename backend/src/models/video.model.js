@@ -10,7 +10,7 @@ const videoSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    videoUrl: {
+    videoId: {
       type: String,
       required: true,
     },
@@ -54,4 +54,5 @@ const videoSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-export const Video = mongoose.model("Video", videoSchema);
+const Video = mongoose.model("Video", videoSchema);
+export default Video;

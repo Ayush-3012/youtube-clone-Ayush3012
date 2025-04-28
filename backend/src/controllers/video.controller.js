@@ -1,15 +1,15 @@
-import { Video } from "../models/video.model.js";
-import { Channel } from "../models/channel.model.js";
+import Video from "../models/video.model.js";
+import Channel from "../models/channel.model.js";
 
 export const uploadVideo = async (req, res) => {
+  const { title, thumbnailUrl, videoId, description, channelId } =
+    req.body.videoData;
   try {
-    const { title, thumbnailUrl, videoUrl, description, channelId } = req.body;
-
     // creating new video
     const newVideo = await Video.create({
       title,
       thumbnailUrl,
-      videoUrl,
+      videoId,
       description,
       channel: channelId,
       uploader: req.user.id,
@@ -32,7 +32,7 @@ export const getAllVideo = async (req, res) => {
     // finding all videos
     const foundVideos = await Video.find()
       .populate("channel", "channelName")
-      .populate("uploader", "username");
+      .populate("uploader", ["username", "avatar"]);
 
     return res.status(200).json(foundVideos);
   } catch (error) {
@@ -43,17 +43,15 @@ export const getAllVideo = async (req, res) => {
 export const getOneVideo = async (req, res) => {
   try {
     // finding video using id passed in params
-    const foundVideo = await Video.findById(req.params.id)
-      .populate("channel", "channelName")
-      .populate("uploader", "username")
+    const foundVideo = await Video.findOne({ videoId: req.params.id })
+      .populate("channel", ["channelName", "subscribers"])
+      .populate("uploader", ["username", "avatar"])
       .populate({
         path: "comments",
         populate: { path: "user", select: "username avatar" },
       });
-
     if (!foundVideo)
       return res.status(404).json({ message: "Video not found" });
-
     return res.status(200).json(foundVideo);
   } catch (error) {
     console.error("Get video by ID error:", error);
@@ -64,7 +62,6 @@ export const updateVideo = async (req, res) => {
   try {
     // finding video using id passed in params
     const foundVideo = await Video.findById(req.params.id);
-
     if (!foundVideo)
       return res.status(404).json({ message: "Video not found" });
 
@@ -80,7 +77,7 @@ export const updateVideo = async (req, res) => {
       new: true,
     });
 
-    return res.status(200).json(updatedVideo);
+    return res.status(200).json({ message: "Video Updated", updatedVideo });
   } catch (error) {
     console.error("Update video error:", error);
     res.status(500).json({ message: "Server error" });
@@ -100,7 +97,7 @@ export const deleteVideo = async (req, res) => {
     }
 
     // removing foundVideo from the video db.
-    await foundVideo.remove();
+    await foundVideo.deleteOne();
 
     // Removing the video id from channel's videos list
     await Channel.findByIdAndUpdate(foundVideo.channel, {

@@ -9,30 +9,32 @@ import ChannelPage from "./pages/ChannelPage";
 import VideoPlayer from "./pages/VideoPlayer";
 import Sidebar from "./components/Sidebar";
 import CreateChannelPage from "./pages/CreateChannelPage";
+import UploadVideoPage from "./pages/UploadVideoPage";
+import UpdateVideoPage from "./pages/UpdateVideoPage";
 
 const App = () => {
   const [showSidebar, setShowSidebar] = useState(false);
 
   return (
-    <div className="mx-2 mt-4 ">
+    <>
       <Header showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       <div className="flex">
-        {showSidebar && (
-          <div className="w-60 shrink-0">
-            <Sidebar />
-          </div>
-        )}
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/channel" element={<ChannelPage />} />
-          <Route path="/video/:id" element={<VideoPlayer />} />
-          <Route path="/create" element={<CreateChannelPage />} />
-        </Routes>
+        {showSidebar && <Sidebar />}
+        <div className="flex-1 m-2">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/channel" element={<ChannelPage />} />
+            <Route path="/video/:id" element={<VideoPlayer />} />
+            <Route path="/upload" element={<UploadVideoPage />} />
+            <Route path="/updateVideo/:id" element={<UpdateVideoPage />} />
+            <Route path="/create" element={<CreateChannelPage />} />
+          </Routes>
+        </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 };
 

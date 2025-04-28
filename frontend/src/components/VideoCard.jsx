@@ -1,10 +1,18 @@
 import { IoLogoYoutube } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { FaRegEye, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setVideoId } from "../redux/videoSlice";
 
 const VideoCard = ({ video }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
-    <Link
-      to={`video/${video.videoId}`}
+    <div
+      onClick={() => {
+        dispatch(setVideoId(video._id));
+        navigate(`/video/${video.videoId}`);
+      }}
       className="cursor-pointer max-w-screen flex w-96 flex-col"
     >
       {/* Thumbnail */}
@@ -16,7 +24,7 @@ const VideoCard = ({ video }) => {
         {/* Channel Logo */}
         <div>
           <img
-            src="https://yt3.ggpht.com/nVHFu4toQhlTic0QNJ1YBvpiQP74RHuwFNuQa6wog0b6TsukL9DVjiUeCAkp1fYyqkZnVpleem0=s68-c-k-c0x00ffffff-no-rj"
+            src={`${video?.uploader?.avatar}`}
             className="rounded-full w-10"
           />
         </div>
@@ -27,13 +35,23 @@ const VideoCard = ({ video }) => {
           </div>
 
           {/* Channel Name */}
-          <div>HD Songs Bollywood</div>
+          <div>{video?.channel?.channelName}</div>
 
           {/* Views */}
-          <div>{video.views}</div>
+          <div className="flex justify-around items-center">
+            <p className="flex gap-1 justify-center items-center">
+              <FaRegEye /> {video?.views}
+            </p>
+            <p className="flex gap-1 justify-center items-center">
+              <FaThumbsUp /> {video?.likes}
+            </p>
+            <p className="flex gap-1 justify-center items-center">
+              <FaThumbsDown /> {video?.dislikes}
+            </p>
+          </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
