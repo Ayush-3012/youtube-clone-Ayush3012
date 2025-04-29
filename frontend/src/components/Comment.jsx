@@ -54,7 +54,7 @@ const Comment = ({ comment }) => {
         />
         <p className="text-lg font-bold">@{comment?.user?.username}</p>
         <p className="text-sm mt-2 sm:mt-0 sm:text-base">
-          {dateFormatter(comment.timestamp)}
+          {dateFormatter(comment?.timestamp)}
         </p>
       </div>
 

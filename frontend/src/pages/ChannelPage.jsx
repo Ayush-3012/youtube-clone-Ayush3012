@@ -142,7 +142,7 @@ const ChannelPage = () => {
                         />
                       </div>
 
-                      <div className="absolute top-2 left-1/4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-4 z-10">
+                      <div className="absolute top-2 left-1/4 opacity-0 max-md:opacity-100 group-hover:opacity-100 transition-opacity duration-300 flex gap-4 z-10">
                         <button
                           onClick={(e) => {
                             e.preventDefault();
@@ -245,7 +245,17 @@ const ChannelPage = () => {
           )}
         </div>
       ) : (
-        <h1>Please login to access this page</h1>
+        <div className="flex gap-4 h-96 items-center flex-col justify-center">
+          <h1 className="text-center font-bold text-blue-500 text-2xl">
+            Please Login to View videos...
+          </h1>
+          <Link
+            to={"/login"}
+            className="text-blue-400 font-serif border-2 border-blue-500 px-4  rounded-2xl hover:scale-x-110 duration-200 transition-all hover:underline text-4xl"
+          >
+            Login
+          </Link>
+        </div>
       )}
     </>
   );

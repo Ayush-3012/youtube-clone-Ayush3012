@@ -14,11 +14,11 @@ const VideoCard = ({ video }) => {
         localStorage.setItem("vidId", video._id);
         navigate(`/video/${video.videoId}`);
       }}
-      className="cursor-pointer max-w-screen flex w-80 max-lg:w-60 max-md:w-80 max-sm:w-96 flex-col"
+      className="cursor-pointer group max-w-screenh hover:-translate-y-1.5 duration-200 transition-all flex w-80 max-lg:w-60 max-md:w-80 max-sm:w-96 flex-col"
     >
       {/* Thumbnail */}
       <div>
-        <img src={video.thumbnailUrl} className="h-56 p-1 rounded-xl" />
+        <img src={video.thumbnailUrl} className="h-56 p-1 group-hover:scale-105 duration-200 transition-all rounded-xl" />
       </div>
 
       <div className="p-1 flex gap-2">

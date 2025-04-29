@@ -29,12 +29,12 @@ const VideoPlayerPage = () => {
   useEffect(() => {
     const fetchEverything = async () => {
       await getOneVideo(id);
-      await saveHistory(id);
-      const res = await getAllComments(id);
+      await saveHistory(vidId);
+      const res = await getAllComments(vidId);
       dispatch(setComments(res));
-      dispatch(addToHistory(id));
+      dispatch(addToHistory(vidId));
       dispatch(setVideoId(id));
-      localStorage.setItem("vidId", id);
+      localStorage.setItem("vidId", vidId);
     };
 
     fetchEverything();
@@ -67,8 +67,12 @@ const VideoPlayerPage = () => {
       <div className="flex flex-col lg:flex-row mt-4 mx-4 gap-8">
         {/* Left Main Player Section */}
         <div className="flex-1">
-          <div className="rounded-xl overflow-hidden">
-            <Youtube videoId={id} opts={{ height: "250", width: "100%" }} />
+          <div className="relative w-full pb-[56.25%] h-0 overflow-hidden rounded-xl">
+            <Youtube
+              videoId={id}
+              className="absolute top-0 left-0 w-full h-full"
+              opts={{ width: "100%", height: "100%" }}
+            />
           </div>
 
           {/* Video Title */}
@@ -93,7 +97,14 @@ const VideoPlayerPage = () => {
             </div>
 
             {/* Subscribe Button */}
-            <button className="bg-black text-white px-6 py-2 rounded-full hover:opacity-80">
+            <button
+              className="border border-black hover:bg-black cursor-pointer hover:scale-x-115 duration-200 transition-all hover:text-white px-6 py-2 rounded-full"
+              onClick={() =>
+                enqueueSnackbar("Subscribed (in progress)", {
+                  variant: "success",
+                })
+              }
+            >
               Subscribe
             </button>
           </div>
@@ -101,13 +112,15 @@ const VideoPlayerPage = () => {
           {/* Views and Likes */}
           <div className="flex flex-wrap gap-4 mt-4 text-gray-600 text-sm">
             <p className="flex gap-1 items-center">
-              <FaRegEye /> {videoDetails?.views}
+              <FaRegEye className="text-xl" /> {videoDetails?.views}
             </p>
             <p className="flex gap-1 items-center">
-              <FaThumbsUp /> {videoDetails?.likes}
+              <FaThumbsUp className="text-xl hover:text-blue-300 cursor-pointer" onClick={() => enqueueSnackbar('Updating likes count', {variant: 'info'})} />{" "}
+              {videoDetails?.likes}
             </p>
             <p className="flex gap-1 items-center">
-              <FaThumbsDown /> {videoDetails?.dislikes}
+              <FaThumbsDown className="text-xl hover:text-red-400 cursor-pointer" onClick={() => enqueueSnackbar('Updating dislikes count', {variant: 'info'})} />{" "}
+              {videoDetails?.dislikes}
             </p>
           </div>
 
@@ -132,7 +145,7 @@ const VideoPlayerPage = () => {
               />
               <button
                 onClick={handleAddComment}
-                className="text-blue-500 font-semibold hover:underline"
+                className="text-blue-500 border border-blue hover:bg-blue-400 hover:text-white hover:scale-x-110 duration-150 transition-all px-2 rounded-full cursor-pointer font-semibold hover:underline"
               >
                 Comment
               </button>

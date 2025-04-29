@@ -60,7 +60,12 @@ const Header = ({ showSidebar, setShowSidebar }) => {
               Sign In
             </button>
           ) : (
-            <div className="flex gap-2 justify-center items-center">
+            <div
+              className="flex gap-2 justify-center items-center"
+              onClick={() =>
+                enqueueSnackbar("User Profile upcoming", { variant: "info" })
+              }
+            >
               <h1>{userDetails?.username}</h1>
               {userDetails?.avatar ? (
                 <img

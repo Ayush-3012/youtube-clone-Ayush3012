@@ -20,7 +20,9 @@ export const uploadVideo = async (req, res) => {
       $push: { videos: newVideo._id },
     });
 
-    return res.status(201).json(newVideo);
+    return res
+      .status(201)
+      .json({ message: "Video Uploaded successfully", newVideo });
   } catch (error) {
     console.error("Upload video error:", error);
     res.status(500).json({ message: "Server error" });

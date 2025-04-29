@@ -2,12 +2,12 @@ import filterOptions from "../utils/DummyFilterOptions";
 
 const FilterButtons = ({ setSelectedCategory, selectedCategory }) => {
   return (
-    <div className="flex gap-3 flex-wrap">
+    <div className="flex gap-3  flex-wrap">
       {filterOptions.map((option) => (
         <button
           key={option}
           onClick={() => setSelectedCategory(option)}
-          className={`py-1 px-4 rounded-full text-sm ${
+          className={`py-1 px-4 cursor-pointer rounded-full text-sm ${
             selectedCategory === option
               ? "bg-black text-white"
               : "bg-gray-200 hover:bg-gray-300"
