@@ -30,15 +30,15 @@ const VideoPlayerPage = () => {
     const fetchEverything = async () => {
       await getOneVideo(id);
       vidId && (await saveHistory(vidId));
-      const res = vidId && (await getAllComments(vidId));
-      dispatch(setComments(res));
+      const res = await getAllComments(vidId);
+      res && dispatch(setComments(res));
       dispatch(addToHistory(vidId));
       dispatch(setVideoId(id));
       localStorage.setItem("vidId", vidId);
     };
 
     fetchEverything();
-  }, [vidId, id]);
+  }, [id]);
 
   const handleAddComment = async () => {
     if (newComment.trim() === "") return;
@@ -165,7 +165,7 @@ const VideoPlayerPage = () => {
 
             <div className="mt-4 flex flex-col gap-4">
               {comments?.length > 0 ? (
-                comments.map((comment) => (
+                comments?.map((comment) => (
                   <Comment key={comment._id} comment={comment} />
                 ))
               ) : (

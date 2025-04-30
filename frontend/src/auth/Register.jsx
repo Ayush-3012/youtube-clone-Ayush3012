@@ -35,7 +35,7 @@ const Register = () => {
     try {
       await register(username, email, password, avatar);
       setError(""); // ser error to null if all are correct
-      enqueueSnackbar("User Registered, please login", { variant: "success" });
+      enqueueSnackbar("User Registered", { variant: "success" });
     } catch (err) {
       setError(`${err?.response?.data?.message}`); // show error if error is there
       enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
@@ -48,7 +48,9 @@ const Register = () => {
         onSubmit={handleRegister}
         className="bg-white p-8 rounded-xl shadow-md w-96 max-lg:w-80 max-md:w-72 flex flex-col gap-2"
       >
-        <h2 className="text-2xl font-bold text-center text-blue-600 mb-4 underline">Register</h2>
+        <h2 className="text-2xl font-bold text-center text-blue-600 mb-4 underline">
+          Register
+        </h2>
 
         {error && <p className="text-red-500 text-center">{error}</p>}
 

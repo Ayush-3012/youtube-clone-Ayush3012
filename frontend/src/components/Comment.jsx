@@ -44,7 +44,6 @@ const Comment = ({ comment }) => {
     enqueueSnackbar("Comment Updated", { variant: "success" });
     setIsEditing(false);
   };
-
   return (
     <div className="p-2 sm:p-3 rounded-lg duration-200 transition-all border-b">
       <div className="flex items-center gap-2">
@@ -90,7 +89,7 @@ const Comment = ({ comment }) => {
       )}
 
       {/* Edit/Delete Buttons */}
-      {userInfo === comment.user._id && (
+      {userInfo === comment?.user?._id && (
         <div className="flex gap-2 ml-12 mt-2">
           <button
             onClick={() => setIsEditing(true)}
