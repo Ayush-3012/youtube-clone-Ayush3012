@@ -1,21 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { useDispatch} from "react-redux";
-import { setChannelDetails } from "../redux/channelSlice";
+import { useDispatch } from "react-redux";
+import { setChannelDetails, setChannelId } from "../redux/channelSlice";
 import { useEffect } from "react";
 
 export const useChannel = () => {
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
-  const savedChannelId = localStorage.getItem("channelId");
 
   useEffect(() => {
+    const savedChannelId = localStorage.getItem("channelId");
+    if (!savedChannelId) return;
     const fetchMyChannelDetails = async () => {
       const res = await axios.get(
         `${import.meta.env.VITE_API_ROUTES}/channels/${savedChannelId}`
       );
 
       dispatch(setChannelDetails(res?.data));
+      dispatch(setChannelId(res?.data?._id));
     };
 
     fetchMyChannelDetails();
@@ -31,7 +33,10 @@ export const useChannel = () => {
         },
       }
     );
+
     dispatch(setChannelDetails(res?.data?.newChannel));
+    dispatch(setChannelId(res?.data?.newChannel?._id));
+    localStorage.setItem("channelId", res?.data?.newChannel?._id);
     return res?.data?.message;
   };
 

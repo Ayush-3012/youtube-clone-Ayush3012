@@ -235,11 +235,16 @@ const ChannelPage = () => {
             </>
           ) : (
             <>
-              <div>
-                <h1 className="text-center font-bold text-blue-500 underline text-2xl">
-                  You don't have a channel right now, Create One!!!{" "}
-                  <Link to={"/create"}>Create Channel</Link>
+              <div className="text-center font-bold justify-center items-center flex flex-col gap-2">
+                <h1 className=" text-2xl">
+                  You don't have a channel right now, Create One!!!
                 </h1>
+                <Link
+                  to={"/create"}
+                  className="underline hover:scale-110 w-fit hover:bg-blue-500 hover:text-white py-2 px-4  border rounded-full border-blue-500 duration-200 transition-all"
+                >
+                  Create Channel
+                </Link>
               </div>
             </>
           )}

@@ -29,8 +29,8 @@ const VideoPlayerPage = () => {
   useEffect(() => {
     const fetchEverything = async () => {
       await getOneVideo(id);
-      await saveHistory(vidId);
-      const res = await getAllComments(vidId);
+      vidId && (await saveHistory(vidId));
+      const res = vidId && (await getAllComments(vidId));
       dispatch(setComments(res));
       dispatch(addToHistory(vidId));
       dispatch(setVideoId(id));
@@ -115,11 +115,23 @@ const VideoPlayerPage = () => {
               <FaRegEye className="text-xl" /> {videoDetails?.views}
             </p>
             <p className="flex gap-1 items-center">
-              <FaThumbsUp className="text-xl hover:text-blue-300 cursor-pointer" onClick={() => enqueueSnackbar('Updating likes count', {variant: 'info'})} />{" "}
+              <FaThumbsUp
+                className="text-xl hover:text-blue-300 cursor-pointer"
+                onClick={() =>
+                  enqueueSnackbar("Updating likes count", { variant: "info" })
+                }
+              />{" "}
               {videoDetails?.likes}
             </p>
             <p className="flex gap-1 items-center">
-              <FaThumbsDown className="text-xl hover:text-red-400 cursor-pointer" onClick={() => enqueueSnackbar('Updating dislikes count', {variant: 'info'})} />{" "}
+              <FaThumbsDown
+                className="text-xl hover:text-red-400 cursor-pointer"
+                onClick={() =>
+                  enqueueSnackbar("Updating dislikes count", {
+                    variant: "info",
+                  })
+                }
+              />{" "}
               {videoDetails?.dislikes}
             </p>
           </div>

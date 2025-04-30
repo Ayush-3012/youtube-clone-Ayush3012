@@ -37,9 +37,12 @@ const Sidebar = () => {
       <div
         className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
         onClick={() => {
-          enqueueSnackbar(`Total Subscribers: ${channelDetails?.subscribers}`, {
-            variant: "success",
-          });
+          enqueueSnackbar(
+            `Total Subscribers: ${channelDetails?.subscribers || 'NA'}`,
+            {
+              variant: "success",
+            }
+          );
         }}
       >
         <MdOutlineSubscriptions className="text-2xl" />

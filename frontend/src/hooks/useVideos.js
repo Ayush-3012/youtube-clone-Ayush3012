@@ -35,6 +35,7 @@ export const useVideos = () => {
     );
 
     dispatch(setVideoDetails(res?.data));
+    localStorage.setItem("vidId", res?.data?._id);
   };
 
   const updateVideo = async (vidId, updatedData) => {

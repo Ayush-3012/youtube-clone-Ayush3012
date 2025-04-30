@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useChannel } from "../hooks/useChannel";
 import { enqueueSnackbar } from "notistack";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const CreateChannelPage = () => {
   const loc = useLocation();
@@ -22,6 +22,7 @@ const CreateChannelPage = () => {
   const [error, setError] = useState("");
 
   const { createChannel, updateChannelInfo } = useChannel();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,9 +38,11 @@ const CreateChannelPage = () => {
       if (editMode) {
         await updateChannelInfo(oldChannelData._id, channelData);
         enqueueSnackbar("Channel Updated Successfully", { variant: "success" });
+        navigate("/channel");
       } else {
         const res = await createChannel(channelData);
         enqueueSnackbar(res, { variant: "success" });
+        navigate("/channel");
       }
     } catch (err) {
       console.log(err);

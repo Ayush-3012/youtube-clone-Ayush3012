@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setChannelId } from "../redux/channelSlice";
+import { enqueueSnackbar } from "notistack";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,10 @@ export const useAuth = () => {
 
   useEffect(() => {
     const savedChannelId = localStorage.getItem("channelId");
+    if (!token) {
+      enqueueSnackbar("User is not logged In", { variant: "info" });
+      return;
+    }
     const checkStatus = async () => {
       const res = await axios.get(
         `${import.meta.env.VITE_API_ROUTES}/users/auth-status`,

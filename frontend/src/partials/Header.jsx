@@ -9,12 +9,14 @@ import { useEffect } from "react";
 import { IoLogOut } from "react-icons/io5";
 import { enqueueSnackbar } from "notistack";
 import { useChannel } from "../hooks/useChannel";
+import { useVideos } from "../hooks/useVideos";
 
 const Header = ({ showSidebar, setShowSidebar }) => {
   const { getUserDetails, logout } = useAuth();
   const { userInfo, userDetails } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   useChannel();
+  useVideos();
 
   useEffect(() => {
     const findData = async () => {
@@ -60,28 +62,32 @@ const Header = ({ showSidebar, setShowSidebar }) => {
               Sign In
             </button>
           ) : (
-            <div
-              className="flex gap-2 justify-center items-center"
-              onClick={() =>
-                enqueueSnackbar("User Profile upcoming", { variant: "info" })
-              }
-            >
-              <h1>{userDetails?.username}</h1>
-              {userDetails?.avatar ? (
-                <img
-                  src={`${userDetails?.avatar}`}
-                  className="w-8 h-8 rounded-full"
+            <div className="flex gap-2 justify-center items-center">
+              <div
+                className="flex gap-2 justify-center items-center pr-2 border-r-2"
+                onClick={() =>
+                  enqueueSnackbar("User Profile upcoming", { variant: "info" })
+                }
+              >
+                {userDetails?.avatar ? (
+                  <img
+                    src={`${userDetails?.avatar}`}
+                    className="w-8 h-8 rounded-full"
+                  />
+                ) : (
+                  <FaRegUserCircle className="text-4xl" />
+                )}
+                <h1>{userDetails?.username}</h1>
+              </div>
+              {userDetails && (
+                <IoLogOut
+                  className="text-4xl text-red-400 duration-200 transition-all hover:text-red-500 hover:-translate-y-1.5"
+                  onClick={async () => {
+                    const res = await logout();
+                    enqueueSnackbar(res, { variant: "success" });
+                  }}
                 />
-              ) : (
-                <FaRegUserCircle className="text-4xl" />
               )}
-              <IoLogOut
-                className="text-4xl text-red-400"
-                onClick={async () => {
-                  const res = await logout();
-                  enqueueSnackbar(res, { variant: "success" });
-                }}
-              />
             </div>
           )}
         </div>
